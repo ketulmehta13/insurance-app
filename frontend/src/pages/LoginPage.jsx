@@ -5,6 +5,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSpinner } from "@fortawesome/free-solid-svg-icons";
 import { AuthContext } from "./AuthProvider";
 
+
 const LoginPage = () => {
   const [role, setRole] = useState("agent");
   const [username, setUsername] = useState("");
@@ -36,7 +37,7 @@ const LoginPage = () => {
       setIsLoggedIn(true);
 
       if (user_role === "admin") {
-        navigate("/admin-dashboard");
+        navigate("/dashboard");
       } else if (user_role === "agent") {
         navigate("/agent-dashboard");
       } else {

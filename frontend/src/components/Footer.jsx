@@ -145,7 +145,7 @@ const Footer = () => {
           </div>
         </div>
 
-        <div className="border-t border-gray-800 mt-12 pt-8">
+        <div className="border-t border-gray-800 mt-10 pt-6">
           <div className="flex justify-center">
             {" "}
             {/* Added justify-center */}

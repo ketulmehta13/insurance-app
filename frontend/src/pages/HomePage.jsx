@@ -1,6 +1,6 @@
 import React from "react";
 import Hero from "../components/Hero";
-import InsuranceCategories from "../components/InsuranceCategories";
+import InsuranceCategories from "./insurance pages/InsuranceCategories";
 import { Link } from "react-router-dom";
 
 const HomePage = () => {

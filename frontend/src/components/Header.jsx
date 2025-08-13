@@ -1,20 +1,19 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { User } from "lucide-react";
 import logo from "../assets/photo insurance.png";
+import { AuthContext } from "../pages/AuthProvider";
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [isMobileServicesOpen, setIsMobileServicesOpen] = useState(false);
+  const { isLoggedIn, setIsLoggedIn } = useContext(AuthContext);
+
   const dropdownRef = useRef(null);
 
   const navigate = useNavigate();
-
-  // Get tokens and role from localStorage
-  const accessToken = localStorage.getItem("accessToken");
-  const userRole = localStorage.getItem("userRole");
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -33,9 +32,10 @@ const Header = () => {
   const handleLogout = () => {
     localStorage.removeItem("accessToken");
     localStorage.removeItem("refreshToken");
-    localStorage.removeItem("userRole");
-    navigate("/");
-    // Optionally, reload or update state if you have global state elsewhere
+    setIsLoggedIn(false);
+    console.log("Logged out");
+
+    navigate("/login");
   };
 
   return (
@@ -44,7 +44,7 @@ const Header = () => {
         <div className="flex justify-between items-center h-16">
           {/* Logo - Far Left */}
           <Link to="/" className="flex items-center">
-            <img src={logo} className="w-8 h-8 object-contain" />
+            <img src={logo} className="w-14 h-20 object-contain" />
           </Link>
 
           {/* Desktop Navigation - Center */}
@@ -129,8 +129,8 @@ const Header = () => {
           </nav>
 
           {/* Desktop Login/Register or Profile/Logout */}
-          <div className="hidden md:flex items-center space-x-4">
-            {accessToken && userRole === "customer" ? (
+          <div className="hidden md:flex items-center space-x-4 ">
+            {isLoggedIn ? (
               <>
                 <Link
                   to="/profile"
@@ -221,6 +221,7 @@ const Header = () => {
         </div>
 
         {/* Mobile Menu */}
+        {/* Mobile Menu */}
         {isMenuOpen && (
           <div className="md:hidden py-4 border-t bg-white">
             <div className="flex flex-col space-y-2">
@@ -290,6 +291,46 @@ const Header = () => {
               >
                 Contact Us
               </Link>
+
+              {/* Add login/register or profile/logout */}
+              {isLoggedIn ? (
+                <div className="flex flex-col space-y-2 mt-4 border-t pt-4">
+                  <Link
+                    to="/profile"
+                    className="px-3 py-3 rounded-md text-gray-700 hover:text-indigo-600 hover:bg-indigo-50 transition-colors flex items-center space-x-2"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    <User className="w-6 h-6" />
+                    <span>Profile</span>
+                  </Link>
+                  <button
+                    onClick={() => {
+                      handleLogout();
+                      setIsMenuOpen(false);
+                    }}
+                    className="px-2 py-1 rounded-md font-bold bg-red-600 text-white hover:bg-red-700 transition-colors"
+                  >
+                    Logout
+                  </button>
+                </div>
+              ) : (
+                <div className="flex flex-col space-y-2 mt-4 border-t pt-4">
+                  <Link
+                    to="/login"
+                    className="px-3 py-3 rounded-md font-bold bg-indigo-700 text-white hover:bg-indigo-800 transition-colors text-center"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    Login
+                  </Link>
+                  <Link
+                    to="/register"
+                    className="px-3 py-3 rounded-md font-bold bg-indigo-700 text-white hover:bg-indigo-800 transition-colors text-center"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    Register
+                  </Link>
+                </div>
+              )}
             </div>
           </div>
         )}
