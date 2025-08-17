@@ -3,8 +3,7 @@ import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSpinner } from "@fortawesome/free-solid-svg-icons";
-import { AuthContext } from "./AuthProvider";
-
+import { AuthContext } from "../pages/AuthProvider";
 
 const LoginPage = () => {
   const [role, setRole] = useState("agent");
@@ -13,35 +12,55 @@ const LoginPage = () => {
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-  const {isLoggedIn, setIsLoggedIn} = useContext(AuthContext)
+  const { setIsLoggedIn, setUser } = useContext(AuthContext);
 
   const handleLogin = async (e) => {
     e.preventDefault();
     setLoading(true);
+    setErrors({});
 
     try {
       const response = await axios.post(
         "http://127.0.0.1:8000/api/v1/accounts/unified-login/",
-        {
-          username,
-          password,
-          role,
-        }
+        { username, password, role }
       );
-      localStorage.setItem('accessToken', response.data.access)
-      localStorage.setItem('refreshToken', response.data.refresh)
-      console.log('Login successful');
 
-      const { token, user_role } = response.data;
+      // Ensure token exists
+      if (!response.data.access || !response.data.refresh) {
+        setErrors({
+          general: response.data.detail || "Invalid login response.",
+        });
+        setLoading(false);
+        return;
+      }
 
+      localStorage.setItem("accessToken", response.data.access);
+      localStorage.setItem("refreshToken", response.data.refresh);
+      const userData = {
+        username: response.data.username,
+        role: response.data.role,
+        email: response.data.email || "", 
+      };
+      
+      // Store user data in localStorage
+      localStorage.setItem("user", JSON.stringify(userData));
+      
+      // Update context state
+      setUser(userData);
+     
+
+      console.log("Login successful", response.data);
       setIsLoggedIn(true);
 
-      if (user_role === "admin") {
+      const role1 = response.data.role;
+      if (role1 === "admin") {
         navigate("/dashboard");
-      } else if (user_role === "agent") {
-        navigate("/agent-dashboard");
+      } else if (role1 === "agent") {
+        navigate("/agentdashboard");
+      } else if (role1 === "customer") {
+        navigate("/customerdashboard");
       } else {
-        navigate("/");
+        navigate("/login");
       }
     } catch (error) {
       setErrors({

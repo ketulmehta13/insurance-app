@@ -9,7 +9,7 @@ const Header = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [isMobileServicesOpen, setIsMobileServicesOpen] = useState(false);
-  const { isLoggedIn, setIsLoggedIn } = useContext(AuthContext);
+  const { isLoggedIn, logout } = useContext(AuthContext);
 
   const dropdownRef = useRef(null);
 
@@ -28,15 +28,6 @@ const Header = () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
-
-  const handleLogout = () => {
-    localStorage.removeItem("accessToken");
-    localStorage.removeItem("refreshToken");
-    setIsLoggedIn(false);
-    console.log("Logged out");
-
-    navigate("/login");
-  };
 
   return (
     <header className="bg-white shadow-lg sticky top-0 z-50">
@@ -140,7 +131,7 @@ const Header = () => {
                   <User className="w-6 h-6" />
                 </Link>
                 <button
-                  onClick={handleLogout}
+                  onClick={logout}
                   className="px-4 py-2 rounded-md font-bold bg-red-600 text-white hover:bg-red-700 transition-colors"
                 >
                   Logout
@@ -305,7 +296,7 @@ const Header = () => {
                   </Link>
                   <button
                     onClick={() => {
-                      handleLogout();
+                      logout();
                       setIsMenuOpen(false);
                     }}
                     className="px-2 py-1 rounded-md font-bold bg-red-600 text-white hover:bg-red-700 transition-colors"
