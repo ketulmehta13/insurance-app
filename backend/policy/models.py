@@ -4,6 +4,7 @@ from django.db import models
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.utils import timezone
+from client.models import FamilyHead
 
 # --- Custom Manager for Soft Deletion ---
 class PolicyManager(models.Manager):
@@ -22,9 +23,10 @@ class Policy(models.Model):
     policy_number = models.CharField(max_length=100, unique=True)
     insurance_company = models.CharField(max_length=255)
     policy_type = models.CharField(max_length=50, choices=POLICY_TYPES)
-    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
-    object_id = models.PositiveIntegerField()
-    policy_holder = GenericForeignKey('content_type', 'object_id')
+    
+    holder = models.ForeignKey(
+    'client.FamilyHead', on_delete=models.CASCADE, related_name='policies')
+
     start_date = models.DateField()
     end_date = models.DateField()
     premium_amount = models.DecimalField(max_digits=10, decimal_places=2)

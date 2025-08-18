@@ -1,16 +1,16 @@
 # agent/models.py
 
 from django.db import models
+from django.contrib.auth.models import User
 
 class SubAgent(models.Model):
-    """
-    Represents a Sub Agent's comprehensive information in the database.
-    """
+   
     STATUS_CHOICES = [
         ('Active', 'Active'),
         ('Inactive', 'Inactive'),
         ('Suspended', 'Suspended'),
     ]
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
 
     # Personal Information
     first_name = models.CharField(max_length=100)

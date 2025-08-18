@@ -13,6 +13,9 @@ urlpatterns = [
     path('agent/', include('agent.urls')),
     path('insurance_app/', include('insurance_app.urls')),
     path('dashboard/', include('dashboard.urls')),
+    path('inquiry/', include('inquiry.urls')),
+    path('notifications/', include('notification.urls')),
+
     
     ]
 if settings.DEBUG:

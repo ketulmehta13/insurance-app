@@ -1,40 +1,33 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { ArrowUp } from "lucide-react"; // Using Lucide React for the arrow icon
+import { ArrowUp } from "lucide-react";
+import logo from "../assets/photo insurance.png";
 
 const Footer = () => {
   const [isVisible, setIsVisible] = useState(false);
 
-  // Show button when page is scrolled down
   useEffect(() => {
     const toggleVisibility = () => {
-      if (window.pageYOffset > 300) {
-        setIsVisible(true);
-      } else {
-        setIsVisible(false);
-      }
+      setIsVisible(window.pageYOffset > 300);
     };
 
     window.addEventListener("scroll", toggleVisibility);
     return () => window.removeEventListener("scroll", toggleVisibility);
   }, []);
 
-  // Scroll to top handler
   const scrollToTop = () => {
-    window.scrollTo({
-      top: 0,
-      behavior: "smooth",
-    });
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   return (
-    <footer className="bg-gray-900 text-white relative">
+    <footer className="bg-gray-900 text-white relative" role="contentinfo">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="grid md:grid-cols-4 gap-8">
           {/* Company Info */}
           <div className="col-span-1">
             <Link to="/" className="flex items-center space-x-2 mb-4">
-              <span className="text-xl font-bold">PR_Advisor</span>
+              <img src={logo} alt="PR-Advisor Logo" className="w-14 h-20 object-contain" />
+              <span className="text-xl font-bold">PR-Advisor</span>
             </Link>
             <p className="text-gray-400 mb-6">
               Your trusted partner in finding the perfect insurance coverage.
@@ -46,27 +39,10 @@ const Footer = () => {
           <div>
             <h3 className="text-lg font-semibold mb-4">Quick Links</h3>
             <ul className="space-y-2">
-              <li>
-                <Link to="/" className="text-gray-400 hover:text-white">
-                  Home
-                </Link>
-              </li>
-              <li>
-                <Link to="/about" className="text-gray-400 hover:text-white">
-                  About Us
-                </Link>
-              </li>
-              <li>
-                <Link to="/privacypolicy" className="text-gray-400 hover:text-white">
-                  Privacy Policies
-                </Link>
-              </li>
-              
-              <li>
-                <Link to="/faq" className="text-gray-400 hover:text-white">
-                  FAQs
-                </Link>
-              </li>
+              <li><Link to="/" className="text-gray-400 hover:text-white">Home</Link></li>
+              <li><Link to="/about" className="text-gray-400 hover:text-white">About Us</Link></li>
+              <li><Link to="/privacypolicy" className="text-gray-400 hover:text-white">Privacy Policies</Link></li>
+              <li><Link to="/faq" className="text-gray-400 hover:text-white">FAQs</Link></li>
             </ul>
           </div>
 
@@ -74,54 +50,12 @@ const Footer = () => {
           <div>
             <h3 className="text-lg font-semibold mb-4">Insurance Types</h3>
             <ul className="space-y-2">
-              <li>
-                <Link
-                  to="/health-insurance"
-                  className="text-gray-400 hover:text-white"
-                >
-                  Health Insurance
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to="/life-insurance"
-                  className="text-gray-400 hover:text-white"
-                >
-                  Life Insurance
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to="/vehicle-insurance"
-                  className="text-gray-400 hover:text-white"
-                >
-                  Vehicle Insurance
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to="/property-insurance"
-                  className="text-gray-400 hover:text-white"
-                >
-                  Property Insurance
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to="/business-insurance"
-                  className="text-gray-400 hover:text-white"
-                >
-                  Business Insurance
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to="/travel-insurance"
-                  className="text-gray-400 hover:text-white"
-                >
-                  Travel Insurance
-                </Link>
-              </li>
+              <li><Link to="/health-insurance" className="text-gray-400 hover:text-white">Health Insurance</Link></li>
+              <li><Link to="/life-insurance" className="text-gray-400 hover:text-white">Life Insurance</Link></li>
+              <li><Link to="/vehicle-insurance" className="text-gray-400 hover:text-white">Vehicle Insurance</Link></li>
+              <li><Link to="/property-insurance" className="text-gray-400 hover:text-white">Property Insurance</Link></li>
+              <li><Link to="/business-insurance" className="text-gray-400 hover:text-white">Business Insurance</Link></li>
+              <li><Link to="/travel-insurance" className="text-gray-400 hover:text-white">Travel Insurance</Link></li>
             </ul>
           </div>
 
@@ -130,15 +64,15 @@ const Footer = () => {
             <h3 className="text-lg font-semibold mb-4">Contact Us</h3>
             <div className="space-y-3 text-gray-400">
               <div className="flex items-center space-x-3">
-                <span>📞</span>
+                <span aria-hidden="true">📞</span>
                 <span>99999999999</span>
               </div>
               <div className="flex items-center space-x-3">
-                <span>📧</span>
+                <span aria-hidden="true">📧</span>
                 <span>info@pr_advisor.com</span>
               </div>
               <div className="flex items-center space-x-3">
-                <span>📍</span>
+                <span aria-hidden="true">📍</span>
                 <span>123 Insurance St, City, State 12345</span>
               </div>
             </div>
@@ -147,11 +81,7 @@ const Footer = () => {
 
         <div className="border-t border-gray-800 mt-10 pt-6">
           <div className="flex justify-center">
-            {" "}
-            {/* Added justify-center */}
-            <p className="text-gray-400 text-sm">
-              Copyright © 2024 PR-Advisor. All rights reserved.
-            </p>
+            <p className="text-gray-400 text-sm">Copyright © 2024 PR-Advisor. All rights reserved.</p>
           </div>
         </div>
       </div>

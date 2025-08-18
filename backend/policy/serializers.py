@@ -1,22 +1,34 @@
 from rest_framework import serializers
 from .models import Policy, PolicyRenewal
+from client.serializers import FamilyHeadSerializer
+from .models import FamilyHead
 
 class PolicySerializer(serializers.ModelSerializer):
-    policy_holder_name = serializers.SerializerMethodField()
+    
+    holder = FamilyHeadSerializer(read_only=True)  # To show holder info
+    holder_id = serializers.PrimaryKeyRelatedField(
+        queryset=FamilyHead.objects.all(), write_only=True, source='holder'
+    )
 
     class Meta:
         model = Policy
         fields = '__all__'
+        
+    # policy_holder_name = serializers.SerializerMethodField()
 
-    def get_policy_holder_name(self, obj):
-        if obj.policy_holder:  # This assumes you have GenericForeignKey (content_type + object_id)
-            # Try to return a sensible display value
-            if hasattr(obj.policy_holder, "full_name"):  # For family head/member
-                return obj.policy_holder.full_name
-            elif hasattr(obj.policy_holder, "name"):  # For firm
-                return obj.policy_holder.name
-            return str(obj.policy_holder)
-        return "N/A"
+    # class Meta:
+    #     model = Policy
+    #     fields = '__all__'
+
+    # def get_policy_holder_name(self, obj):
+    #     if obj.policy_holder:  # This assumes you have GenericForeignKey (content_type + object_id)
+    #         # Try to return a sensible display value
+    #         if hasattr(obj.policy_holder, "full_name"):  # For family head/member
+    #             return obj.policy_holder.full_name
+    #         elif hasattr(obj.policy_holder, "name"):  # For firm
+    #             return obj.policy_holder.name
+    #         return str(obj.policy_holder)
+    #     return "N/A"
 
 class PolicyForRenewalSerializer(serializers.ModelSerializer):
     policy_holder_name = serializers.SerializerMethodField()

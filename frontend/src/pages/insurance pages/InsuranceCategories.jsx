@@ -9,7 +9,7 @@ const InsuranceCategories = () => {
       description: 'Comprehensive medical coverage for you and your family',
       icon: '❤️',
       color: 'red',
-      link: '/health-insurance'
+      link: '/insurance/health'
     },
     {
       id: 2,
@@ -17,7 +17,7 @@ const InsuranceCategories = () => {
       description: 'Secure your family\'s financial future with life coverage',
       icon: '👤',
       color: 'blue',
-      link: '/life-insurance'
+      link: '/insurance/life'
     },
     {
       id: 3,
@@ -25,7 +25,7 @@ const InsuranceCategories = () => {
       description: 'Protect your car, bike, and other vehicles',
       icon: '🚗',
       color: 'green',
-      link: '/vehicle-insurance'
+      link: '/insurance/vehicle'
     },
     {
       id: 4,
@@ -33,7 +33,7 @@ const InsuranceCategories = () => {
       description: 'Safeguard your home and valuable possessions',
       icon: '🏠',
       color: 'purple',
-      link: '/property-insurance'
+      link: '/insurance/property'
     },
     {
       id: 5,
@@ -41,7 +41,7 @@ const InsuranceCategories = () => {
       description: 'Comprehensive protection for your business',
       icon: '💼',
       color: 'orange',
-      link: '/business-insurance'
+      link: '/insurance/business'
     },
     {
       id: 6,
@@ -49,7 +49,7 @@ const InsuranceCategories = () => {
       description: 'Stay protected during your travels worldwide',
       icon: '✈️',
       color: 'teal',
-      link: '/travel-insurance'
+      link: '/insurance/travel'
     }
   ];
 

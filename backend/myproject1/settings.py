@@ -45,6 +45,8 @@ INSTALLED_APPS = [
     'agent',
     'insurance_app',
     'dashboard',
+    'inquiry',
+    'notification',
     
     "corsheaders",
     'rest_framework_simplejwt',

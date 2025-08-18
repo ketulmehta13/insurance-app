@@ -1,5 +1,6 @@
 import React from "react";
 import { Routes, Route } from "react-router-dom";
+import ScrollToTop from "./pages/ScrollToTop";
 import Dashboard from "./pages/Dashboard";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
@@ -39,13 +40,17 @@ import EditPolicy from "./components/policymanage/EditPolicy";
 import ViewPolicy from "./components/policymanage/ViewPolicy";
 import ViewSubAgent from "./components/subagent/ViewSubAgent";
 import EditSubAgent from "./components/subagent/EditSubAgent";
-
+import AboutUs from "./pages/insurance pages/AboutUs";
+import AdminInquiryList from './components/adminmanage/AdminInquiryList';
+import CustomerMyInquiries from "./pages/CustomerMyInquiries";
+import AgentAssignedInquiries from "./components/subagent/AgentAssignedInquiries";
+import AgentInquiryDetail from "./components/subagent/AgentInquiryDetail";
 const App = () => {
   return (
     <div className="min-h-screen flex flex-col">
-      <Routes>
+      <ScrollToTop />
 
-      
+      <Routes>
 
         {/* admin dashboard  */}
         <Route path="/dashboard" element={<DashboardLayout />}>
@@ -58,6 +63,7 @@ const App = () => {
           <Route path="manageclient" element={<ManageClients />} />
           <Route path="clientmanage" element={<ClientManagement />} />
           <Route path="trashmanage" element={<TrashManagement />} />
+          <Route path="inquiries" element={<AdminInquiryList />} />
 
           {/* Corrected Routes for View and Edit */}
           <Route path="client/view/:clientType/:clientId" element={<ViewClient />} />
@@ -79,15 +85,18 @@ const App = () => {
           <Route path="subagentmanagement/addsubagent" element={<AddSubAgent />} />
           <Route path="subagentmanagement/managesubagents" element={<ManageSubAgents />} />
           {/* --- NEW ROUTES FOR VIEW AND EDIT SUB-AGENT --- */}
-            <Route path="subagent/view/:agentId" element={<ViewSubAgent />} />
-            <Route path="subagent/edit/:agentId" element={<EditSubAgent />} />
+          <Route path="subagent/view/:agentId" element={<ViewSubAgent />} />
+          <Route path="subagent/edit/:agentId" element={<EditSubAgent />} />
+          
 
           {/* Insurance Management */}
           <Route path="insurancemanagement" element={<InsuranceManagement />} />
-
+          
 
 
         </Route>
+        <Route path="/agent/inquiries" element={<AgentAssignedInquiries />} />
+        <Route path="/agent/inquiries/:inquiryId" element={<AgentInquiryDetail />} />
 
         {/* Routes with header and footer */}
         <Route
@@ -104,6 +113,10 @@ const App = () => {
 
                   <Route path="/insurances" element={<Insurance />} />
                   <Route path="/contact" element={<Contact />} />
+                  <Route path="/about" element={<AboutUs />} />
+                  <Route path="/my-inquiries" element={<CustomerMyInquiries />} />
+
+
                   <Route path="/privacypolicy" element={<PrivacyPolicy />} />
                   <Route path="/faq" element={<FAQ />} />
                   <Route path="/insurance/health" element={<Health />} />

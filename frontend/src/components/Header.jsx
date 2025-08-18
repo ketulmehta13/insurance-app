@@ -42,8 +42,6 @@ const Header = () => {
           <nav
             className="hidden md:flex items-center space-x-6"
             ref={dropdownRef}
-            onMouseEnter={() => setIsDropdownOpen(true)}
-            onMouseLeave={() => setIsDropdownOpen(false)}
           >
             <Link
               to="/"
@@ -54,53 +52,36 @@ const Header = () => {
 
             {/* Services Dropdown */}
             <div className="relative">
-              <button className="flex items-center font-medium text-gray-900 hover:text-indigo-600 px-3 py-2">
+              <button
+                className="flex items-center font-medium text-gray-900 hover:text-indigo-600 px-3 py-2"
+                onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                aria-haspopup="true"
+                aria-expanded={isDropdownOpen}
+              >
                 Services <span className="ml-1">▾</span>
               </button>
               {isDropdownOpen && (
-                <div className="absolute bg-white shadow-md rounded mt-2 py-2 w-48 z-10 border">
-                  <Link
-                    to="/insurance/health"
-                    className="block px-4 py-2 hover:bg-indigo-50"
-                    onClick={() => setIsDropdownOpen(false)}
-                  >
-                    Health Insurance
-                  </Link>
-                  <Link
-                    to="/insurance/life"
-                    className="block px-4 py-2 hover:bg-indigo-50"
-                    onClick={() => setIsDropdownOpen(false)}
-                  >
-                    Life Insurance
-                  </Link>
-                  <Link
-                    to="/insurance/vehicle"
-                    className="block px-4 py-2 hover:bg-indigo-50"
-                    onClick={() => setIsDropdownOpen(false)}
-                  >
-                    Vehicle Insurance
-                  </Link>
-                  <Link
-                    to="/insurance/travel"
-                    className="block px-4 py-2 hover:bg-indigo-50"
-                    onClick={() => setIsDropdownOpen(false)}
-                  >
-                    Travel Insurance
-                  </Link>
-                  <Link
-                    to="/insurance/property"
-                    className="block px-4 py-2 hover:bg-indigo-50"
-                    onClick={() => setIsDropdownOpen(false)}
-                  >
-                    Property Insurance
-                  </Link>
-                  <Link
-                    to="/insurance/pet"
-                    className="block px-4 py-2 hover:bg-indigo-50"
-                    onClick={() => setIsDropdownOpen(false)}
-                  >
-                    Business Insurance
-                  </Link>
+                <div
+                  className="absolute bg-white shadow-md rounded mt-2 py-2 w-48 z-10 border"
+                  ref={dropdownRef}
+                >
+                  {[
+                    { label: "Health Insurance", to: "/insurance/health" },
+                    { label: "Life Insurance", to: "/insurance/life" },
+                    { label: "Vehicle Insurance", to: "/insurance/vehicle" },
+                    { label: "Travel Insurance", to: "/insurance/travel" },
+                    { label: "Property Insurance", to: "/insurance/property" },
+                    { label: "Business Insurance", to: "/insurance/business" },
+                  ].map((item) => (
+                    <Link
+                      key={item.to}
+                      to={item.to}
+                      className="block px-4 py-2 hover:bg-indigo-50"
+                      onClick={() => setIsDropdownOpen(false)}
+                    >
+                      {item.label}
+                    </Link>
+                  ))}
                 </div>
               )}
             </div>
@@ -124,7 +105,7 @@ const Header = () => {
             {isLoggedIn ? (
               <>
                 <Link
-                  to="/profile"
+                  to="/customerdashboard"
                   className="flex items-center px-3 py-2 rounded-md bg-gray-300 text-gray-800 hover:bg-gray-400 transition-colors"
                   title="Profile"
                 >

@@ -17,34 +17,14 @@ const SubAgentManagement = () => {
       icon: "👥",
       color: "bg-green-500",
     },
-    // {
-    //   title: "Performance Dashboard",
-    //   description: "Track sub agent performance and sales",
-    //   path: "/subagentmanagement/performance",
-    //   icon: "📊",
-    //   color: "bg-purple-500",
-    // },
-    // {
-    //   title: "Commission Management",
-    //   description: "Manage commission structures and payments",
-    //   path: "/subagentmanagement/commission",
-    //   icon: "💰",
-    //   color: "bg-orange-500",
-    // },
-    // {
-    //   title: "Training & Certification",
-    //   description: "Track agent training and certifications",
-    //   path: "/subagentmanagement/training",
-    //   icon: "🎓",
-    //   color: "bg-indigo-500",
-    // },
-    // {
-    //   title: "Territory Management",
-    //   description: "Assign and manage agent territories",
-    //   path: "/subagentmanagement/territory",
-    //   icon: "🗺️",
-    //   color: "bg-teal-500",
-    // },
+    {
+      title: "Assigned Inquiries",
+      description: "View all inquiries assigned to you",
+      path: "/agent/inquiries",
+      icon: "📋",
+      color: "bg-indigo-500",
+    },
+    
   ]
 
   return (
