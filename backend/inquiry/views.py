@@ -3,23 +3,28 @@ from .models import Inquiry
 from .serializers import InquirySerializer
 from notification.models import Notification
 from django.contrib.auth.models import User
+from rest_framework import generics, permissions
+from rest_framework.response import Response
+from rest_framework import status
+from .models import Inquiry
+from .serializers import InquirySerializer
+from notification.models import Notification
+from django.contrib.auth.models import User
+from client.models import FamilyHead
 
-from .models import SubAgent  
+from agent.models import SubAgent  
 class AgentInquiryDetailView(generics.RetrieveUpdateAPIView):
     queryset = Inquiry.objects.all()
     serializer_class = InquirySerializer
     permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
-        agent = SubAgent.objects.get(user=self.request.user)
-        return Inquiry.objects.filter(assigned_subagent=agent)
-class AgentInquiryDetailView(generics.RetrieveUpdateAPIView):
-    serializer_class = InquirySerializer
-    permission_classes = [permissions.IsAuthenticated]
+        try:
+            agent = SubAgent.objects.get(user=self.request.user)
+            return Inquiry.objects.filter(assigned_subagent=agent)
+        except SubAgent.DoesNotExist:
+            return Inquiry.objects.none()
 
-    def get_queryset(self):
-        agent = SubAgent.objects.get(user=self.request.user)
-        return Inquiry.objects.filter(assigned_subagent=agent)
 
 class AgentAssignedInquiriesView(generics.ListAPIView):
     serializer_class = InquirySerializer
@@ -27,20 +32,75 @@ class AgentAssignedInquiriesView(generics.ListAPIView):
 
     def get_queryset(self):
         user = self.request.user
+        
+        # Check if filtering by specific agent
+        agent_id = self.request.query_params.get('agent')
+        
+        if agent_id is not None:
+            # Filter by the selected agent ID from query params
+            return Inquiry.objects.filter(assigned_subagent__id=agent_id).order_by('-created_at')
+        
+        # Default behavior - return inquiries for current logged-in agent
         try:
-            agent = SubAgent.objects.get(user=user)  
+            agent = SubAgent.objects.get(user=user)
+            return Inquiry.objects.filter(assigned_subagent=agent).order_by('-created_at')
         except SubAgent.DoesNotExist:
             return Inquiry.objects.none()
-        return Inquiry.objects.filter(assigned_subagent=agent).order_by('-created_at')
+
+    def list(self, request, *args, **kwargs):
+        try:
+            queryset = self.get_queryset()
+            serializer = self.get_serializer(queryset, many=True)
+            return Response(serializer.data)
+        except Exception as e:
+            print(f"Error in AgentAssignedInquiriesView: {e}")
+            return Response(
+                {"error": "Failed to fetch inquiries", "details": str(e)}, 
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
+
 
 class MyInquiryListView(generics.ListAPIView):
     serializer_class = InquirySerializer
     permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
-        # Return inquiries for the logged-in customer's FamilyHead
-        family_head = self.request.user.family_head  # Adjust based on your user model
-        return Inquiry.objects.filter(customer=family_head).order_by('-created_at')
+        user = self.request.user
+        print(f"User: {user.username}")  # Debug log
+        
+        try:
+            # Check if user has a family_head relationship
+            if hasattr(user, 'family_head'):
+                family_head = user.family_head
+                print(f"Found family_head: {family_head}")  # Debug log
+            else:
+                # Alternative: Find family head by user
+                family_head = FamilyHead.objects.filter(user=user).first()
+                print(f"Found family_head via filter: {family_head}")  # Debug log
+            
+            if family_head:
+                inquiries = Inquiry.objects.filter(customer=family_head).order_by('-created_at')
+                print(f"Found {inquiries.count()} inquiries")  # Debug log
+                return inquiries
+            else:
+                print("No family_head found")  # Debug log
+                return Inquiry.objects.none()
+                
+        except Exception as e:
+            print(f"Error in MyInquiryListView: {e}")  # Debug log
+            return Inquiry.objects.none()
+    
+    def list(self, request, *args, **kwargs):
+        try:
+            queryset = self.get_queryset()
+            serializer = self.get_serializer(queryset, many=True)
+            return Response(serializer.data)
+        except Exception as e:
+            print(f"Error in list method: {e}")
+            return Response(
+                {"error": "Failed to fetch inquiries", "details": str(e)}, 
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
 
 class InquiryListCreateView(generics.ListCreateAPIView):
     serializer_class = InquirySerializer
@@ -48,11 +108,15 @@ class InquiryListCreateView(generics.ListCreateAPIView):
 
     def get_queryset(self):
         user = self.request.user
-        if hasattr(user, 'profile') and user.profile.role == 'admin':
-            return Inquiry.objects.all()
-        elif hasattr(user, 'family_head'):
-            return Inquiry.objects.filter(customer=user.family_head)
-        else:
+        try:
+            if hasattr(user, 'profile') and user.profile.role == 'admin':
+                return Inquiry.objects.all()
+            elif hasattr(user, 'family_head'):
+                return Inquiry.objects.filter(customer=user.family_head)
+            else:
+                return Inquiry.objects.none()
+        except Exception as e:
+            print(f"Error in get_queryset: {e}")
             return Inquiry.objects.none()
 
     def perform_create(self, serializer):
@@ -76,10 +140,17 @@ class InquiryDetailView(generics.RetrieveUpdateAPIView):
 
     def perform_update(self, serializer):
         inquiry = serializer.save()
-        # Notify customer about status update
-        user = inquiry.customer.user
-        Notification.objects.create(
-            user=user,
-            message=f"Your inquiry #{inquiry.id} status changed to {inquiry.status}.",
-            url=f"/customer/inquiries/{inquiry.id}/"
-        )
+    # Notify customer about status update
+        try:
+            if inquiry.customer and inquiry.customer.user:
+                user = inquiry.customer.user
+                Notification.objects.create(
+                    user=user,
+                    message=f"Your inquiry #{inquiry.id} status changed to {inquiry.status}.",
+                    url=f"/customer/inquiries/{inquiry.id}/"
+                )
+        except Exception as e:
+            print(f"Error sending notification: {e}")
+            
+            pass
+

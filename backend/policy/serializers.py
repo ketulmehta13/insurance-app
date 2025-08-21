@@ -14,21 +14,7 @@ class PolicySerializer(serializers.ModelSerializer):
         model = Policy
         fields = '__all__'
         
-    # policy_holder_name = serializers.SerializerMethodField()
-
-    # class Meta:
-    #     model = Policy
-    #     fields = '__all__'
-
-    # def get_policy_holder_name(self, obj):
-    #     if obj.policy_holder:  # This assumes you have GenericForeignKey (content_type + object_id)
-    #         # Try to return a sensible display value
-    #         if hasattr(obj.policy_holder, "full_name"):  # For family head/member
-    #             return obj.policy_holder.full_name
-    #         elif hasattr(obj.policy_holder, "name"):  # For firm
-    #             return obj.policy_holder.name
-    #         return str(obj.policy_holder)
-    #     return "N/A"
+    
 
 class PolicyForRenewalSerializer(serializers.ModelSerializer):
     policy_holder_name = serializers.SerializerMethodField()
@@ -64,6 +50,7 @@ class DeletedPolicySerializer(serializers.ModelSerializer):
         fields = [
             'id',
             'policy_number',
+            'holder',
             'policy_holder_name',
             'policy_type',
             'sum_assured',
@@ -74,11 +61,7 @@ class DeletedPolicySerializer(serializers.ModelSerializer):
         ]
 
     def get_policy_holder_name(self, obj):
-        holder = getattr(obj, "policy_holder", None)
-        if holder is not None:
-            if hasattr(holder, "first_name"):
-                return holder.first_name
-            if hasattr(holder, "firm_name"):
-                return holder.firm_name
-            return str(holder)
-        return "N/A"
+       # Fix: Use 'holder' instead of 'policy_holder'
+        if obj.holder:
+            return f"{obj.holder.first_name} {obj.holder.last_name}".strip()
+        return "Unknown"

@@ -22,7 +22,6 @@ class SoftDeleteManager(models.Manager):
 
 class FamilyHead(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='family_head', null=True, blank=True)
-
     first_name = models.CharField(max_length=100)
     middle_name = models.CharField(max_length=100, blank=True, null=True)
     last_name = models.CharField(max_length=100)

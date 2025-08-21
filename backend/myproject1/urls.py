@@ -14,7 +14,7 @@ urlpatterns = [
     path('insurance_app/', include('insurance_app.urls')),
     path('dashboard/', include('dashboard.urls')),
     path('inquiry/', include('inquiry.urls')),
-    path('notifications/', include('notification.urls')),
+    path('', include('notification.urls')),
 
     
     ]

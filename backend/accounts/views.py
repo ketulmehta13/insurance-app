@@ -98,13 +98,7 @@ class MyPoliciesView(APIView):
         except FamilyHead.DoesNotExist:
             return Response({"error": "Client profile not found for this user."}, status=404)
         
-        #     client = FamilyHead.objects.get(user=request.user)
-        #     content_type = ContentType.objects.get_for_model(client)
-        #     client_policies = Policy.objects.filter(content_type=content_type, object_id=client.id)
-        #     serializer = PolicySerializer(client_policies, many=True)
-        #     return Response(serializer.data)
-        # except FamilyHead.DoesNotExist:
-        #     return Response({"error": "Client profile not found for this user."}, status=404)
+        
 
 
 # This is a new view to fetch the customer's profile details.

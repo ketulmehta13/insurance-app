@@ -20,11 +20,11 @@ import FAQ from "./pages/insurance pages/Faqs";
 import RegisterPage from "./pages/RegisterPage";
 import DashboardHome from "./components/adminmanage/DashboardHome";
 import DashboardLayout from "./components/adminmanage/DashboardLayout";
-import AddFamilyHead from "./components/clientmanage/Addfamilyhead";
+import AddFamilyHead from "./components/clientmanage/AddFamilyHead";
 import AddFamilyMember from "./components/clientmanage/AddFamilyMember";
 import AddFirm from "./components/clientmanage/AddFirm";
 import ManageClients from "./components/clientmanage/ManageClients";
-import ClientManagement from "./components/Clientmanage/Clientmanagement";
+import ClientManagement from "./components/clientmanage/ClientManagement";
 import TrashManagement from "./components/clientmanage/TrashManagement";
 import AddNewPolicy from './components/policymanage/AddNewPoilcy';
 import RenewalPolicy from './components/policymanage/RenewalPolicy';
@@ -45,6 +45,7 @@ import AdminInquiryList from './components/adminmanage/AdminInquiryList';
 import CustomerMyInquiries from "./pages/CustomerMyInquiries";
 import AgentAssignedInquiries from "./components/subagent/AgentAssignedInquiries";
 import AgentInquiryDetail from "./components/subagent/AgentInquiryDetail";
+
 const App = () => {
   return (
     <div className="min-h-screen flex flex-col">
@@ -84,18 +85,19 @@ const App = () => {
           <Route path="subagentmanagement" element={<SubAgentManagement />} />
           <Route path="subagentmanagement/addsubagent" element={<AddSubAgent />} />
           <Route path="subagentmanagement/managesubagents" element={<ManageSubAgents />} />
+          <Route path="subagentmanagement/assignedinquiries" element={<AgentAssignedInquiries />} />
+
           {/* --- NEW ROUTES FOR VIEW AND EDIT SUB-AGENT --- */}
           <Route path="subagent/view/:agentId" element={<ViewSubAgent />} />
           <Route path="subagent/edit/:agentId" element={<EditSubAgent />} />
-          
 
+          <Route path="my-inquiries" element={<CustomerMyInquiries />} />
+          
           {/* Insurance Management */}
           <Route path="insurancemanagement" element={<InsuranceManagement />} />
-          
-
 
         </Route>
-        <Route path="/agent/inquiries" element={<AgentAssignedInquiries />} />
+        
         <Route path="/agent/inquiries/:inquiryId" element={<AgentInquiryDetail />} />
 
         {/* Routes with header and footer */}
@@ -114,7 +116,7 @@ const App = () => {
                   <Route path="/insurances" element={<Insurance />} />
                   <Route path="/contact" element={<Contact />} />
                   <Route path="/about" element={<AboutUs />} />
-                  <Route path="/my-inquiries" element={<CustomerMyInquiries />} />
+                  
 
 
                   <Route path="/privacypolicy" element={<PrivacyPolicy />} />

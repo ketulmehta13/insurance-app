@@ -59,7 +59,22 @@ class Policy(models.Model):
         self.save()
 
     def __str__(self):
-        return f"Policy {self.policy_number} for {self.policy_holder}"
+        if self.holder:
+            holder_name = f"{self.holder.first_name} {self.holder.last_name}".strip()
+            return f"Policy {self.policy_number} for {holder_name}"
+        return f"Policy {self.policy_number}"
+    @property
+    def policy_holder(self):
+        """Return the policy holder for backward compatibility"""
+        return self.holder
+
+    @property  
+    def policy_holder_name(self):
+        """Return the full name of the policy holder"""
+        if self.holder:
+            full_name = f"{self.holder.first_name} {self.holder.last_name}".strip()
+            return full_name if full_name else self.holder.user.username
+        return "No Holder"
 
     class Meta:
         ordering = ['-end_date']
