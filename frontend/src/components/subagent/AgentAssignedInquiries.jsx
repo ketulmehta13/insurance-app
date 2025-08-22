@@ -1,18 +1,17 @@
-
-
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { 
-  MessageSquare, 
-  User, 
-  FileText, 
-  Eye, 
+import {
+  MessageSquare,
+  User,
+  FileText,
+  Eye,
   Loader2,
   AlertCircle,
   Inbox,
-  ArrowRight,ArrowLeft
+  ArrowRight,
+  ArrowLeft,
 } from "lucide-react";
 
 const AgentAssignedInquiries = () => {
@@ -20,7 +19,7 @@ const AgentAssignedInquiries = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [agents, setAgents] = useState([]);
-  const [selectedAgent, setSelectedAgent] = useState(''); 
+  const [selectedAgent, setSelectedAgent] = useState("");
 
   const navigate = useNavigate();
 
@@ -53,7 +52,7 @@ const AgentAssignedInquiries = () => {
     try {
       const token = localStorage.getItem("accessToken");
       let url = "http://127.0.0.1:8000/inquiry/agent-inquiries/";
-      
+
       // Add agent query parameter if agent is selected
       if (agentId) {
         url += `?agent=${agentId}`;
@@ -62,7 +61,7 @@ const AgentAssignedInquiries = () => {
       const res = await axios.get(url, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      
+
       setInquiries(res.data);
     } catch (err) {
       console.error("Error fetching inquiries:", err);
@@ -79,13 +78,20 @@ const AgentAssignedInquiries = () => {
 
   const getStatusColor = (status) => {
     const colors = {
-      'Open': 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300',
-      'In Progress': 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-300',
-      'Resolved': 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300',
-      'Closed': 'bg-gray-100 dark:bg-gray-900/30 text-gray-700 dark:text-gray-300',
-      'Pending': 'bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-300'
+      Open: "bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300",
+      "In Progress":
+        "bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-300",
+      Resolved:
+        "bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300",
+      Closed:
+        "bg-gray-100 dark:bg-gray-900/30 text-gray-700 dark:text-gray-300",
+      Pending:
+        "bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-300",
     };
-    return colors[status] || 'bg-gray-100 dark:bg-gray-900/30 text-gray-700 dark:text-gray-300';
+    return (
+      colors[status] ||
+      "bg-gray-100 dark:bg-gray-900/30 text-gray-700 dark:text-gray-300"
+    );
   };
 
   const containerVariants = {
@@ -94,9 +100,9 @@ const AgentAssignedInquiries = () => {
       opacity: 1,
       transition: {
         staggerChildren: 0.1,
-        delayChildren: 0.2
-      }
-    }
+        delayChildren: 0.2,
+      },
+    },
   };
 
   const cardVariants = {
@@ -107,9 +113,9 @@ const AgentAssignedInquiries = () => {
       transition: {
         type: "spring",
         stiffness: 100,
-        damping: 12
-      }
-    }
+        damping: 12,
+      },
+    },
   };
 
   if (loading) {
@@ -157,55 +163,44 @@ const AgentAssignedInquiries = () => {
   }
 
   // Updated empty state with back button
-if (inquiries.length === 0) {
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-cyan-50 to-slate-100 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 py-8">
-      <div className="max-w-4xl mx-auto px-6">
-        {/* Back Button */}
-        <motion.div
-          initial={{ opacity: 0, x: -20 }}
-          animate={{ opacity: 1, x: 0 }}
-          className="mb-8"
-        >
-          <button
-            onClick={() => navigate("/dashboard/inquiries")} // or your desired route
-            className="inline-flex items-center gap-2 text-cyan-600 hover:text-cyan-700 dark:text-cyan-400 dark:hover:text-cyan-300 font-medium transition-colors duration-200"
+  if (inquiries.length === 0) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-cyan-50 to-slate-100 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 py-8">
+        <div className="max-w-4xl mx-auto px-6">
+          {/* Back Button */}
+          <motion.div
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            className="mb-8"
           >
-            <ArrowLeft size={18} />
-            Back to Inquiries
-          </button>
-        </motion.div>
+            <button
+              onClick={() => navigate("/dashboard/inquiries")} // or your desired route
+              className="inline-flex items-center gap-2 text-cyan-600 hover:text-cyan-700 dark:text-cyan-400 dark:hover:text-cyan-300 font-medium transition-colors duration-200"
+            >
+              <ArrowLeft size={18} />
+              Back to Inquiries
+            </button>
+          </motion.div>
 
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="text-center py-16"
-        >
-          <div className="w-24 h-24 bg-slate-100 dark:bg-slate-700 rounded-full flex items-center justify-center mx-auto mb-6">
-            <Inbox className="w-12 h-12 text-slate-400" />
-          </div>
-          <h3 className="text-2xl font-bold text-slate-900 dark:text-white mb-4">
-            No Assigned Inquiries
-          </h3>
-          <p className="text-slate-600 dark:text-slate-300 text-lg mb-8">
-            You don't have any assigned inquiries at the moment.
-          </p>
-
-          {/* Alternative Back Button (Centered) */}
-          <motion.button
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            onClick={() => navigate("/dashboard/subagentmanagement/assignedinquiries")}
-            className="inline-flex items-center gap-2 px-6 py-3 bg-cyan-600 text-white rounded-xl font-semibold hover:bg-cyan-700 transition-all duration-200 shadow-lg"
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="text-center py-16"
           >
-            <ArrowLeft size={18} />
-            Back to All Inquiries
-          </motion.button>
-        </motion.div>
+            <div className="w-24 h-24 bg-slate-100 dark:bg-slate-700 rounded-full flex items-center justify-center mx-auto mb-6">
+              <Inbox className="w-12 h-12 text-slate-400" />
+            </div>
+            <h3 className="text-2xl font-bold text-slate-900 dark:text-white mb-4">
+              No Assigned Inquiries
+            </h3>
+            <p className="text-slate-600 dark:text-slate-300 text-lg mb-8">
+              You don't have any assigned inquiries at the moment.
+            </p>
+          </motion.div>
+        </div>
       </div>
-    </div>
-  );
-}
+    );
+  }
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-cyan-50 to-slate-100 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 py-8 transition-colors duration-500">
       <div className="max-w-6xl mx-auto px-6">
@@ -231,23 +226,23 @@ if (inquiries.length === 0) {
               </div>
 
               {/* Agent Filter Dropdown */}
-          <div className="bg-white rounded-xl p-4 shadow-lg border">
-            <label className="block text-sm font-medium text-slate-700 mb-2">
-              Filter by Agent
-            </label>
-            <select
-              value={selectedAgent}
-              onChange={handleAgentChange}
-              className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500"
-            >
-              <option value="">All Agents (My Inquiries)</option>
-              {agents.map((agent) => (
-                <option key={agent.id} value={agent.id}>
-                  {agent.first_name} {agent.last_name}
-                </option>
-              ))}
-            </select>
-          </div>
+              <div className="bg-white rounded-xl p-4 shadow-lg border">
+                <label className="block text-sm font-medium text-slate-700 mb-2">
+                  Filter by Agent
+                </label>
+                <select
+                  value={selectedAgent}
+                  onChange={handleAgentChange}
+                  className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500"
+                >
+                  <option value="">All Agents (My Inquiries)</option>
+                  {agents.map((agent) => (
+                    <option key={agent.id} value={agent.id}>
+                      {agent.first_name} {agent.last_name}
+                    </option>
+                  ))}
+                </select>
+              </div>
             </div>
           </motion.div>
 
@@ -285,6 +280,8 @@ if (inquiries.length === 0) {
                         </th>
                       </tr>
                     </thead>
+                    // Replace the table body section with this corrected
+                    version:
                     <tbody className="bg-white dark:bg-slate-800 divide-y divide-slate-200 dark:divide-slate-700">
                       <AnimatePresence>
                         {inquiries.map((inq, index) => (
@@ -295,7 +292,9 @@ if (inquiries.length === 0) {
                             exit={{ opacity: 0, y: -20 }}
                             transition={{ delay: index * 0.05 }}
                             className="hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors cursor-pointer"
-                            onClick={() => navigate(`/agent/inquiries/${inq.id}`)}
+                            onClick={() =>
+                              navigate(`/agent/inquiries/${inq.id}`)
+                            }
                           >
                             <td className="px-6 py-4 whitespace-nowrap">
                               <div className="flex items-center gap-3">
@@ -304,7 +303,8 @@ if (inquiries.length === 0) {
                                 </div>
                                 <div>
                                   <div className="text-sm font-medium text-slate-900 dark:text-white">
-                                    {inq.customer.full_name}
+                                    {inq.customer?.full_name ||
+                                      "Unknown Customer"}
                                   </div>
                                   <div className="text-sm text-slate-500 dark:text-slate-400">
                                     Customer
@@ -316,18 +316,22 @@ if (inquiries.length === 0) {
                               <div className="flex items-center gap-2">
                                 <FileText className="w-4 h-4 text-slate-400" />
                                 <span className="text-sm font-medium text-slate-900 dark:text-white">
-                                  {inq.policy.policy_number}
+                                  {inq.policy?.policy_number || "N/A"}
                                 </span>
                               </div>
                             </td>
                             <td className="px-6 py-4">
                               <div className="text-sm text-slate-900 dark:text-white max-w-xs truncate">
-                                {inq.message}
+                                {inq.message || "No message"}
                               </div>
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap">
-                              <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold ${getStatusColor(inq.status)}`}>
-                                {inq.status}
+                              <span
+                                className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold ${getStatusColor(
+                                  inq.status
+                                )}`}
+                              >
+                                {inq.status || "Unknown"}
                               </span>
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
@@ -365,7 +369,8 @@ if (inquiries.length === 0) {
                   Inquiry Management
                 </h3>
                 <p className="text-slate-600 dark:text-slate-300 text-sm">
-                  Click on any inquiry to view details and respond to customer questions
+                  Click on any inquiry to view details and respond to customer
+                  questions
                 </p>
               </div>
               <div className="flex items-center gap-4 text-sm">
@@ -373,14 +378,21 @@ if (inquiries.length === 0) {
                   <div className="text-2xl font-bold text-indigo-600 dark:text-indigo-400">
                     {inquiries.length}
                   </div>
-                  <div className="text-slate-500 dark:text-slate-400">Total</div>
+                  <div className="text-slate-500 dark:text-slate-400">
+                    Total
+                  </div>
                 </div>
                 <div className="w-px h-8 bg-slate-300 dark:bg-slate-600"></div>
                 <div className="text-center">
                   <div className="text-2xl font-bold text-green-600 dark:text-green-400">
-                    {inquiries.filter(inq => inq.status === 'Resolved').length}
+                    {
+                      inquiries.filter((inq) => inq.status === "Resolved")
+                        .length
+                    }
                   </div>
-                  <div className="text-slate-500 dark:text-slate-400">Resolved</div>
+                  <div className="text-slate-500 dark:text-slate-400">
+                    Resolved
+                  </div>
                 </div>
               </div>
             </div>

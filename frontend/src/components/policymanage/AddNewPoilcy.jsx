@@ -1,301 +1,3 @@
-// "use client";
-// import React, { useState, useEffect } from "react";
-// import { useNavigate } from "react-router-dom";
-// import axios from "axios";
-
-// const AddNewPolicy = () => {
-//   const navigate = useNavigate();
-
-//   // State for the form data, using snake_case to match the Django model
-//   const [formData, setFormData] = useState({
-//     policy_number: "",
-//     insurance_company: "",
-//     policy_type: "",
-//     start_date: "",
-//     end_date: "",
-//     premium_amount: "",
-//     sum_assured: "",
-//     status: "Pending",
-//     policy_document: null,
-//   });
-
-//   // State to manage the selected policy holder
-//   const [policyHolder, setPolicyHolder] = useState({ id: "", type: "" });
-//   const [allClients, setAllClients] = useState([]);
-
-//   // State for UI feedback
-//   const [loading, setLoading] = useState(false);
-//   const [error, setError] = useState(null);
-//   const [message, setMessage] = useState("");
-
-//   // Fetch all clients to populate the dropdown
-//   useEffect(() => {
-//     const fetchClients = async () => {
-//       try {
-//         const response = await axios.get("http://127.0.0.1:8000/client/manage-clients/");
-//         setAllClients(response.data);
-//       } catch (err) {
-//         setError("Failed to load clients for policy holder selection.");
-//         console.error(err);
-//       }
-//     };
-//     fetchClients();
-//   }, []);
-
-//   const handleInputChange = (e) => {
-//     const { name, value } = e.target;
-//     setFormData((prev) => ({ ...prev, [name]: value }));
-//   };
-
-//   const handleFileChange = (e) => {
-//     setFormData((prev) => ({
-//       ...prev,
-//       policy_document: e.target.files[0] || null,
-//     }));
-//   };
-
-//   const handlePolicyHolderChange = (e) => {
-//     const [id, type] = e.target.value.split("|");
-//     setPolicyHolder({ id, type });
-//   };
-
-//   const handleSubmit = async (e) => {
-//     e.preventDefault();
-//     if (!policyHolder.id || !policyHolder.type) {
-//       setError("You must select a policy holder.");
-//       return;
-//     }
-
-//     setLoading(true);
-//     setError(null);
-//     setMessage("");
-
-//     const submissionData = new FormData();
-
-//     // Append form fields
-//     for (const key in formData) {
-//       if (formData[key]) {
-//         submissionData.append(key, formData[key]);
-//       }
-//     }
-
-//     // IMPORTANT: Replace 7,8,9 with actual content type IDs from your database
-//     let contentTypeId;
-//     if (policyHolder.type === "Family Head") contentTypeId = 7;
-//     else if (policyHolder.type === "Family Member") contentTypeId = 8;
-//     else if (policyHolder.type === "Firm") contentTypeId = 9;
-
-//     if (!contentTypeId) {
-//       setError("Could not determine client type. Please check configuration.");
-//       setLoading(false);
-//       return;
-//     }
-
-//     submissionData.append("content_type", contentTypeId);
-//     submissionData.append("object_id", policyHolder.id);
-
-//     try {
-//       await axios.post("http://127.0.0.1:8000/policy/policies/", submissionData, {
-//         headers: { "Content-Type": "multipart/form-data" },
-//       });
-//       setMessage("Policy created successfully!");
-//       setTimeout(() => navigate("/dashboard/policymanagement/managepolicy"), 2000);
-//     } catch (err) {
-//       setError("Failed to create policy. Please check the form and try again.");
-//       console.error(err.response ?? err);
-//     } finally {
-//       setLoading(false);
-//     }
-//   };
-
-//   return (
-//     <div className="p-4 md:p-6 bg-gray-50 min-h-screen">
-//       <div className="max-w-4xl mx-auto">
-//         <h1 className="text-2xl md:text-3xl font-bold text-gray-800 mb-6">Add New Policy</h1>
-//         <div className="bg-white rounded-lg shadow-md p-6 md:p-8 border border-gray-200">
-//           <form onSubmit={handleSubmit} className="space-y-8">
-//             {/* Policy Holder Selection */}
-//             <div>
-//               <h2 className="text-xl font-semibold text-gray-900 mb-6">Policy Holder</h2>
-//               <label className="block text-sm font-medium text-gray-700 mb-2">
-//                 Select an Existing Client *
-//               </label>
-//               <select
-//                 value={`${policyHolder.id}|${policyHolder.type}`}
-//                 onChange={handlePolicyHolderChange}
-//                 required
-//                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-//               >
-//                 <option value="|">-- Choose a Client --</option>
-//                 {allClients.map((client) => (
-//                   <option key={`${client.client_type}-${client.id}`} value={`${client.id}|${client.client_type}`}>
-//                     {client.full_name} ({client.client_type})
-//                   </option>
-//                 ))}
-//               </select>
-//             </div>
-
-//             {/* Policy Details */}
-//             <div>
-//               <h2 className="text-xl font-semibold text-gray-900 mb-6">Policy Details</h2>
-//               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-//                 <div>
-//                   <label className="block text-sm font-medium text-gray-700 mb-2">Policy Number *</label>
-//                   <input
-//                     type="text"
-//                     name="policy_number"
-//                     value={formData.policy_number}
-//                     onChange={handleInputChange}
-//                     required
-//                     className="w-full px-3 py-2 border border-gray-300 rounded-md"
-//                   />
-//                 </div>
-
-//                 <div>
-//                   <label className="block text-sm font-medium text-gray-700 mb-2">Insurance Company *</label>
-//                   <input
-//                     type="text"
-//                     name="insurance_company"
-//                     value={formData.insurance_company}
-//                     onChange={handleInputChange}
-//                     required
-//                     className="w-full px-3 py-2 border border-gray-300 rounded-md"
-//                   />
-//                 </div>
-
-//                 <div>
-//                   <label className="block text-sm font-medium text-gray-700 mb-2">Policy Type *</label>
-//                   <select
-//                     name="policy_type"
-//                     value={formData.policy_type}
-//                     onChange={handleInputChange}
-//                     required
-//                     className="w-full px-3 py-2 border border-gray-300 rounded-md"
-//                   >
-//                     <option value="">Select Type</option>
-//                     <option value="Health">Health</option>
-//                     <option value="Life">Life</option>
-//                     <option value="Vehicle">Vehicle</option>
-//                     <option value="Travel">Travel</option>
-//                     <option value="Property">Property</option>
-//                     <option value="Business">Business</option>
-//                     <option value="Other">Other</option>
-//                   </select>
-//                 </div>
-
-//                 <div>
-//                   <label className="block text-sm font-medium text-gray-700 mb-2">Status *</label>
-//                   <select
-//                     name="status"
-//                     value={formData.status}
-//                     onChange={handleInputChange}
-//                     required
-//                     className="w-full px-3 py-2 border border-gray-300 rounded-md"
-//                   >
-//                     <option value="Pending">Pending</option>
-//                     <option value="Active">Active</option>
-//                     <option value="Expired">Expired</option>
-//                     <option value="Cancelled">Cancelled</option>
-//                     <option value="Due Renewal">Due Renewal</option>
-//                   </select>
-//                 </div>
-
-//                 <div>
-//                   <label className="block text-sm font-medium text-gray-700 mb-2">Start Date *</label>
-//                   <input
-//                     type="date"
-//                     name="start_date"
-//                     value={formData.start_date}
-//                     onChange={handleInputChange}
-//                     required
-//                     className="w-full px-3 py-2 border border-gray-300 rounded-md"
-//                   />
-//                 </div>
-
-//                 <div>
-//                   <label className="block text-sm font-medium text-gray-700 mb-2">End Date *</label>
-//                   <input
-//                     type="date"
-//                     name="end_date"
-//                     value={formData.end_date}
-//                     onChange={handleInputChange}
-//                     required
-//                     className="w-full px-3 py-2 border border-gray-300 rounded-md"
-//                   />
-//                 </div>
-
-//                 <div>
-//                   <label className="block text-sm font-medium text-gray-700 mb-2">Premium Amount *</label>
-//                   <input
-//                     type="number"
-//                     step="0.01"
-//                     name="premium_amount"
-//                     value={formData.premium_amount}
-//                     onChange={handleInputChange}
-//                     required
-//                     className="w-full px-3 py-2 border border-gray-300 rounded-md"
-//                   />
-//                 </div>
-
-//                 <div>
-//                   <label className="block text-sm font-medium text-gray-700 mb-2">Sum Assured *</label>
-//                   <input
-//                     type="number"
-//                     step="0.01"
-//                     name="sum_assured"
-//                     value={formData.sum_assured}
-//                     onChange={handleInputChange}
-//                     required
-//                     className="w-full px-3 py-2 border border-gray-300 rounded-md"
-//                   />
-//                 </div>
-//               </div>
-//             </div>
-
-//             {/* Document Upload */}
-//             <div>
-//               <h2 className="text-xl font-semibold text-gray-900 mb-6">Document Upload</h2>
-//               <div>
-//                 <label className="block text-sm font-medium text-gray-700 mb-2">Policy Document</label>
-//                 <input
-//                   type="file"
-//                   name="policy_document"
-//                   onChange={handleFileChange}
-//                   className="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
-//                 />
-//               </div>
-//             </div>
-
-//             {/* Messages */}
-//             {message && <div className="p-4 text-center text-green-800 bg-green-100 rounded-md">{message}</div>}
-//             {error && <div className="p-4 text-center text-red-800 bg-red-100 rounded-md">{error}</div>}
-
-//             <div className="flex justify-end space-x-4 pt-4 border-t">
-//               <button
-//                 type="button"
-//                 onClick={() => navigate("/dashboard/policymanagement/managepolicy")}
-//                 className="px-6 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700"
-//                 disabled={loading}
-//               >
-//                 Cancel
-//               </button>
-//               <button
-//                 type="submit"
-//                 disabled={loading}
-//                 className="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:bg-blue-400"
-//               >
-//                 {loading ? "Creating..." : "Create Policy"}
-//               </button>
-//             </div>
-//           </form>
-//         </div>
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default AddNewPolicy;
-    
 "use client";
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
@@ -347,8 +49,14 @@ const AddNewPolicy = () => {
     const fetchClients = async () => {
       try {
         setLoadingClients(true);
-        const response = await axios.get("http://127.0.0.1:8000/client/manage-clients/");
-        setAllClients(response.data);
+        const token = localStorage.getItem("accessToken");
+        const response = await axios.get("http://127.0.0.1:8000/client/manage-clients/", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        
+        // Filter to show only Family Heads since Policy model only accepts FamilyHead as holder
+        const familyHeads = response.data.filter(client => client.client_type === "Family Head");
+        setAllClients(familyHeads);
       } catch (err) {
         setError("Failed to load clients for policy holder selection.");
         console.error(err);
@@ -387,6 +95,12 @@ const AddNewPolicy = () => {
       return;
     }
 
+    // Only allow Family Head as holder since that's what your model supports
+    if (policyHolder.type !== "Family Head") {
+      setError("Currently, only Family Head can be set as policy holder.");
+      return;
+    }
+
     setLoading(true);
     setError(null);
     setMessage("");
@@ -395,35 +109,57 @@ const AddNewPolicy = () => {
 
     // Append form fields
     for (const key in formData) {
-      if (formData[key]) {
+      if (formData[key] !== null && formData[key] !== "") {
         submissionData.append(key, formData[key]);
       }
     }
 
-    // IMPORTANT: Replace 7,8,9 with actual content type IDs from your database
-    let contentTypeId;
-    if (policyHolder.type === "Family Head") contentTypeId = 7;
-    else if (policyHolder.type === "Family Member") contentTypeId = 8;
-    else if (policyHolder.type === "Firm") contentTypeId = 9;
-
-    if (!contentTypeId) {
-      setError("Could not determine client type. Please check configuration.");
-      setLoading(false);
-      return;
-    }
-
-    submissionData.append("content_type", contentTypeId);
-    submissionData.append("object_id", policyHolder.id);
+    // Send holder_id instead of holder (to match serializer)
+    submissionData.append("holder_id", policyHolder.id);
 
     try {
-      await axios.post("http://127.0.0.1:8000/policy/policies/", submissionData, {
-        headers: { "Content-Type": "multipart/form-data" },
+      const token = localStorage.getItem("accessToken");
+      console.log("Submitting policy data:", {
+        ...formData,
+        holder_id: policyHolder.id
       });
+
+      await axios.post("http://127.0.0.1:8000/policy/policies/", submissionData, {
+        headers: { 
+          "Content-Type": "multipart/form-data",
+          "Authorization": `Bearer ${token}`
+        },
+      });
+      
       setMessage("Policy created successfully!");
       setTimeout(() => navigate("/dashboard/policymanagement/managepolicy"), 2000);
     } catch (err) {
-      setError("Failed to create policy. Please check the form and try again.");
-      console.error(err.response ?? err);
+      console.error("Full error object:", err);
+      console.error("Response data:", err.response?.data);
+      console.error("Response status:", err.response?.status);
+      
+      let errorMessage = "Failed to create policy.";
+      
+      if (err.response?.data) {
+        // Handle validation errors
+        if (typeof err.response.data === 'object') {
+          const errors = [];
+          for (const [field, messages] of Object.entries(err.response.data)) {
+            if (Array.isArray(messages)) {
+              errors.push(`${field}: ${messages.join(', ')}`);
+            } else {
+              errors.push(`${field}: ${messages}`);
+            }
+          }
+          errorMessage = errors.length > 0 ? errors.join('; ') : errorMessage;
+        } else if (err.response.data.detail) {
+          errorMessage = err.response.data.detail;
+        } else if (err.response.data.error) {
+          errorMessage = err.response.data.error;
+        }
+      }
+      
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }
@@ -515,13 +251,13 @@ const AddNewPolicy = () => {
                     <User className="w-5 h-5 text-blue-600 dark:text-blue-400" />
                   </div>
                   <h2 className="text-2xl font-bold text-slate-900 dark:text-white">
-                    Policy Holder
+                    Policy Holder (Family Head Only)
                   </h2>
                 </div>
                 
                 <div className="bg-blue-50 dark:bg-blue-900/10 rounded-xl p-6 border border-blue-200 dark:border-blue-800/30">
                   <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-3">
-                    Select an Existing Client *
+                    Select a Family Head as Policy Holder *
                   </label>
                   <div className="relative">
                     <select
@@ -532,7 +268,7 @@ const AddNewPolicy = () => {
                       className="w-full px-4 py-3 border border-slate-200 dark:border-slate-600 rounded-xl bg-white dark:bg-slate-700 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-cyan-500 transition-all disabled:opacity-50"
                     >
                       <option value="|">
-                        {loadingClients ? "Loading clients..." : "-- Choose a Client --"}
+                        {loadingClients ? "Loading clients..." : "-- Choose a Family Head --"}
                       </option>
                       {allClients.map((client) => (
                         <option key={`${client.client_type}-${client.id}`} value={`${client.id}|${client.client_type}`}>
@@ -549,9 +285,12 @@ const AddNewPolicy = () => {
                   {allClients.length === 0 && !loadingClients && (
                     <p className="text-sm text-slate-500 dark:text-slate-400 mt-2 flex items-center gap-2">
                       <AlertCircle size={16} />
-                      No clients found. Please add clients first.
+                      No family heads found. Please add family heads first.
                     </p>
                   )}
+                  <p className="text-xs text-blue-600 dark:text-blue-400 mt-2">
+                    Note: Currently, only Family Heads can be assigned as policy holders.
+                  </p>
                 </div>
               </motion.div>
 
@@ -578,7 +317,7 @@ const AddNewPolicy = () => {
                       onChange={handleInputChange}
                       required
                       className="w-full px-4 py-3 border border-slate-200 dark:border-slate-600 rounded-xl bg-white dark:bg-slate-700 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-cyan-500 transition-all"
-                      placeholder="Enter policy number"
+                      placeholder="Enter policy number (e.g., POL-2024-001)"
                     />
                   </div>
 
@@ -596,7 +335,7 @@ const AddNewPolicy = () => {
                       onChange={handleInputChange}
                       required
                       className="w-full px-4 py-3 border border-slate-200 dark:border-slate-600 rounded-xl bg-white dark:bg-slate-700 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-cyan-500 transition-all"
-                      placeholder="Enter insurance company"
+                      placeholder="Enter insurance company name"
                     />
                   </div>
 
@@ -635,7 +374,7 @@ const AddNewPolicy = () => {
                       <option value="Active">✅ Active</option>
                       <option value="Expired">❌ Expired</option>
                       <option value="Cancelled">🚫 Cancelled</option>
-                      <option value="Due Renewal">🔄 Due Renewal</option>
+                      <option value="Due for Renewal">🔄 Due for Renewal</option>
                     </select>
                   </div>
 
@@ -683,6 +422,7 @@ const AddNewPolicy = () => {
                     <input
                       type="number"
                       step="0.01"
+                      min="0"
                       name="premium_amount"
                       value={formData.premium_amount}
                       onChange={handleInputChange}
@@ -702,6 +442,7 @@ const AddNewPolicy = () => {
                     <input
                       type="number"
                       step="0.01"
+                      min="0"
                       name="sum_assured"
                       value={formData.sum_assured}
                       onChange={handleInputChange}
@@ -726,12 +467,13 @@ const AddNewPolicy = () => {
                 
                 <div className="bg-purple-50 dark:bg-purple-900/10 rounded-xl p-6 border border-purple-200 dark:border-purple-800/30">
                   <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-3">
-                    Policy Document
+                    Policy Document (Optional)
                   </label>
                   <input
                     type="file"
                     name="policy_document"
                     onChange={handleFileChange}
+                    accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
                     className="w-full text-sm text-slate-500 dark:text-slate-400
                       file:mr-4 file:py-3 file:px-4 file:rounded-xl file:border-0
                       file:text-sm file:font-semibold file:bg-purple-100 file:text-purple-700
@@ -786,13 +528,13 @@ const AddNewPolicy = () => {
                   type="submit"
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
-                  disabled={loading || loadingClients}
+                  disabled={loading || loadingClients || !policyHolder.id}
                   className="px-8 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-semibold rounded-xl hover:from-indigo-700 hover:to-purple-700 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-lg"
                 >
                   {loading ? (
                     <>
                       <Loader2 className="w-5 h-5 animate-spin" />
-                      Creating...
+                      Creating Policy...
                     </>
                   ) : (
                     <>

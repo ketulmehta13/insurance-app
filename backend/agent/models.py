@@ -10,7 +10,7 @@ class SubAgent(models.Model):
         ('Inactive', 'Inactive'),
         ('Suspended', 'Suspended'),
     ]
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
 
     # Personal Information
     first_name = models.CharField(max_length=100)

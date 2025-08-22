@@ -1,5 +1,3 @@
-
-
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
@@ -69,11 +67,16 @@ const AgentInquiryDetail = () => {
       await axios.patch(
         `http://127.0.0.1:8000/inquiry/agent-inquiries/${inquiryId}/`,
         { status },
-        { headers: { Authorization: `Bearer ${token}` } }
+        { 
+          headers: { 
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json'  // FIXED: Added Content-Type header
+          } 
+        }
       );
       setUpdateSuccess(true);
       setTimeout(() => {
-        navigate("/agent/inquiries");
+        navigate("/dashboard/subagentmanagement/managesubagents");
       }, 2000);
     } catch (err) {
       const msg =
@@ -88,16 +91,11 @@ const AgentInquiryDetail = () => {
 
   const getStatusColor = (status) => {
     const colors = {
-      Pending:
-        "bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-300",
-      Assigned:
-        "bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300",
-      "In Progress":
-        "bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-300",
-      Resolved:
-        "bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300",
-      Closed:
-        "bg-gray-100 dark:bg-gray-900/30 text-gray-700 dark:text-gray-300",
+      Pending: "bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-300",
+      Assigned: "bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300",
+      "In Progress": "bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-300",
+      Resolved: "bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300",
+      Closed: "bg-gray-100 dark:bg-gray-900/30 text-gray-700 dark:text-gray-300",
       Rejected: "bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300",
     };
     return (
@@ -107,12 +105,12 @@ const AgentInquiryDetail = () => {
   };
 
   const statusOptions = [
-    { value: "Pending", icon: "⏳", label: "Pending" },
-    { value: "Assigned", icon: "👤", label: "Assigned" },
-    { value: "In Progress", icon: "🔄", label: "In Progress" },
-    { value: "Resolved", icon: "✅", label: "Resolved" },
-    { value: "Closed", icon: "🔒", label: "Closed" },
-    { value: "Rejected", icon: "❌", label: "Rejected" },
+    { value: "pending", icon: "⏳", label: "Pending" },        // FIXED: lowercase values
+    { value: "assigned", icon: "👤", label: "Assigned" },      // FIXED: lowercase values
+    { value: "in_progress", icon: "🔄", label: "In Progress" }, // FIXED: lowercase values
+    { value: "resolved", icon: "✅", label: "Resolved" },      // FIXED: lowercase values
+    { value: "closed", icon: "🔒", label: "Closed" },          // FIXED: lowercase values
+    { value: "rejected", icon: "❌", label: "Rejected" },      // FIXED: lowercase values
   ];
 
   if (loading) {
@@ -264,8 +262,7 @@ const AgentInquiryDetail = () => {
                         Customer Name
                       </p>
                       <p className="font-semibold text-slate-900 dark:text-white">
-                        {inquiry.customer.full_name ||
-                          inquiry.customer.username}
+                        {inquiry.customer?.full_name || inquiry.customer?.username || "Unknown Customer"}
                       </p>
                     </div>
                   </div>
@@ -297,10 +294,10 @@ const AgentInquiryDetail = () => {
                         Policy Details
                       </p>
                       <p className="font-semibold text-slate-900 dark:text-white">
-                        {inquiry.policy.policy_number}
+                        {inquiry.policy?.policy_number || "N/A"}
                       </p>
                       <p className="text-sm text-slate-500 dark:text-slate-400">
-                        {inquiry.policy.policy_type}
+                        {inquiry.policy?.policy_type || "N/A"}
                       </p>
                     </div>
                   </div>
@@ -325,7 +322,7 @@ const AgentInquiryDetail = () => {
               </div>
               <div className="bg-white dark:bg-slate-700 rounded-lg p-4 border border-slate-200 dark:border-slate-600">
                 <p className="text-slate-900 dark:text-white leading-relaxed">
-                  {inquiry.message}
+                  {inquiry.message || "No message"}
                 </p>
               </div>
             </motion.div>
@@ -358,12 +355,12 @@ const AgentInquiryDetail = () => {
                     <p className="text-sm text-slate-500 dark:text-slate-400">
                       Sub Agent
                     </p>
-                    {inquiry.assigned_agent_details.email && (
+                    {inquiry.assigned_agent_details?.email && (
                       <p className="text-sm text-slate-600 dark:text-slate-300">
                         📧 {inquiry.assigned_agent_details.email}
                       </p>
                     )}
-                    {inquiry.assigned_agent_details.phone && (
+                    {inquiry.assigned_agent_details?.phone && (
                       <p className="text-sm text-slate-600 dark:text-slate-300">
                         📞 {inquiry.assigned_agent_details.phone}
                       </p>
