@@ -136,7 +136,7 @@ const Footer = () => {
             Insurance solutions for everyone, everywhere. Simple, secure, and tailored for your peace of mind.
           </p>
           <p className="text-sm text-slate-400 dark:text-slate-500">
-            © 2024 Guard.In. All rights reserved.
+            © 2024 PR-Advisor All rights reserved.
           </p>
         </div>
 

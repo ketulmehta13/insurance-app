@@ -242,7 +242,7 @@ const AboutUs = () => {
             <Shield className="text-cyan-600 dark:text-cyan-400" size={32} />
           </div>
           <h1 className="text-4xl md:text-5xl font-bold text-slate-900 dark:text-white mb-4">
-            About <span className="text-cyan-600 dark:text-cyan-400">Guard.In</span>
+            About <span className="text-cyan-600 dark:text-cyan-400">PR-Advisor</span>
           </h1>
           <p className="text-xl text-slate-600 dark:text-slate-300 max-w-3xl mx-auto">
             Empowering your future with innovative insurance solutions and exceptional service.

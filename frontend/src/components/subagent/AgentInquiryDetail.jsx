@@ -32,6 +32,7 @@ const AgentInquiryDetail = () => {
   useEffect(() => {
     const fetchInquiry = async () => {
       try {
+        console.log("Fetching inquiry ID:", inquiryId); // Debug log
         const token = localStorage.getItem("accessToken");
         const res = await axios.get(
           `http://127.0.0.1:8000/inquiry/agent-inquiries/${inquiryId}/`,
@@ -42,13 +43,22 @@ const AgentInquiryDetail = () => {
         setInquiry(res.data);
         setStatus(res.data.status);
       } catch (err) {
-        setError("Failed to load inquiry details.");
+        console.error("Error fetching inquiry:", err.response?.data || err.message);
+        if (err.response?.status === 404) {
+          setError("Inquiry not found or you don't have permission to access it.");
+        } else if (err.response?.status === 500) {
+          setError("Server error. Please try again later.");
+        } else {
+          setError("Failed to load inquiry details.");
+        }
       } finally {
         setLoading(false);
       }
     };
 
-    fetchInquiry();
+    if (inquiryId) {
+      fetchInquiry();
+    }
   }, [inquiryId]);
 
   const handleStatusChange = (e) => {
@@ -70,16 +80,19 @@ const AgentInquiryDetail = () => {
         { 
           headers: { 
             Authorization: `Bearer ${token}`,
-            'Content-Type': 'application/json'  // FIXED: Added Content-Type header
+            'Content-Type': 'application/json'
           } 
         }
       );
       setUpdateSuccess(true);
+      setInquiry(prev => ({ ...prev, status })); // Update local state
       setTimeout(() => {
-        navigate("/dashboard/subagentmanagement/managesubagents");
+        navigate("/dashboard/subagentmanagement/assignedinquiries");
       }, 2000);
     } catch (err) {
+      console.error("Error updating status:", err.response?.data || err.message);
       const msg =
+        err.response?.data?.error ||
         err.response?.data?.detail ||
         err.response?.data?.status?.[0] ||
         "Failed to update status.";
@@ -91,26 +104,26 @@ const AgentInquiryDetail = () => {
 
   const getStatusColor = (status) => {
     const colors = {
-      Pending: "bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-300",
-      Assigned: "bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300",
-      "In Progress": "bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-300",
-      Resolved: "bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300",
-      Closed: "bg-gray-100 dark:bg-gray-900/30 text-gray-700 dark:text-gray-300",
-      Rejected: "bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300",
+      pending: "bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-300",
+      assigned: "bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300",
+      in_progress: "bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-300",
+      resolved: "bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300",
+      closed: "bg-gray-100 dark:bg-gray-900/30 text-gray-700 dark:text-gray-300",
+      rejected: "bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300",
     };
     return (
-      colors[status] ||
+      colors[status?.toLowerCase()] ||
       "bg-gray-100 dark:bg-gray-900/30 text-gray-700 dark:text-gray-300"
     );
   };
 
   const statusOptions = [
-    { value: "pending", icon: "⏳", label: "Pending" },        // FIXED: lowercase values
-    { value: "assigned", icon: "👤", label: "Assigned" },      // FIXED: lowercase values
-    { value: "in_progress", icon: "🔄", label: "In Progress" }, // FIXED: lowercase values
-    { value: "resolved", icon: "✅", label: "Resolved" },      // FIXED: lowercase values
-    { value: "closed", icon: "🔒", label: "Closed" },          // FIXED: lowercase values
-    { value: "rejected", icon: "❌", label: "Rejected" },      // FIXED: lowercase values
+    { value: "pending", icon: "⏳", label: "Pending" },
+    { value: "assigned", icon: "👤", label: "Assigned" },
+    { value: "in_progress", icon: "🔄", label: "In Progress" },
+    { value: "resolved", icon: "✅", label: "Resolved" },
+    { value: "closed", icon: "🔒", label: "Closed" },
+    { value: "rejected", icon: "❌", label: "Rejected" },
   ];
 
   if (loading) {
@@ -147,7 +160,7 @@ const AgentInquiryDetail = () => {
           </h3>
           <p className="text-red-600 dark:text-red-400 mb-6">{error}</p>
           <button
-            onClick={() => navigate("/agent/inquiries")}
+            onClick={() => navigate("/dashboard/subagentmanagement/assignedinquiries")}
             className="px-6 py-3 bg-red-600 text-white rounded-xl font-semibold hover:bg-red-700 transition-all duration-200"
           >
             Go Back
@@ -173,7 +186,7 @@ const AgentInquiryDetail = () => {
             The requested inquiry could not be found.
           </p>
           <button
-            onClick={() => navigate("/agent/inquiries")}
+            onClick={() => navigate("/dashboard/subagentmanagement/assignedinquiries")}
             className="px-6 py-3 bg-slate-600 text-white rounded-xl font-semibold hover:bg-slate-700 transition-all duration-200"
           >
             Go Back
@@ -355,14 +368,14 @@ const AgentInquiryDetail = () => {
                     <p className="text-sm text-slate-500 dark:text-slate-400">
                       Sub Agent
                     </p>
-                    {inquiry.assigned_agent_details?.email && (
+                    {inquiry.assigned_subagent?.email && (
                       <p className="text-sm text-slate-600 dark:text-slate-300">
-                        📧 {inquiry.assigned_agent_details.email}
+                        📧 {inquiry.assigned_subagent.email}
                       </p>
                     )}
-                    {inquiry.assigned_agent_details?.phone && (
+                    {inquiry.assigned_subagent?.phone && (
                       <p className="text-sm text-slate-600 dark:text-slate-300">
-                        📞 {inquiry.assigned_agent_details.phone}
+                        📞 {inquiry.assigned_subagent.phone}
                       </p>
                     )}
                   </div>

@@ -168,7 +168,7 @@ const Contact = () => {
             <MessageCircle className="text-cyan-600 dark:text-cyan-400" size={32} />
           </div>
           <h1 className="text-4xl md:text-5xl font-bold text-slate-900 dark:text-white mb-4">
-            Contact <span className="text-cyan-600 dark:text-cyan-400">Guard.In</span>
+            Contact <span className="text-cyan-600 dark:text-cyan-400">PR-Advisor</span>
           </h1>
           <p className="text-xl text-slate-600 dark:text-slate-300 max-w-3xl mx-auto">
             We'd love to hear from you! Reach out with any questions or support needs.

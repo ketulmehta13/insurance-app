@@ -12,8 +12,12 @@ from notification.models import Notification
 from django.contrib.auth.models import User
 from client.models import FamilyHead
 from agent.models import SubAgent
+from django.http import Http404
+
 # Add this import at the top of inquiry/views.py
 from rest_framework.exceptions import ValidationError
+from rest_framework import status
+from rest_framework.response import Response
 
 
 class AgentInquiryDetailView(generics.RetrieveUpdateAPIView):
@@ -25,8 +29,7 @@ class AgentInquiryDetailView(generics.RetrieveUpdateAPIView):
         # Get ALL agents linked to this user (for multiple agents support)
         user_agents = SubAgent.objects.filter(user=user)
         # Only return inquiries assigned to user's agents
-        return Inquiry.objects.filter(assigned_subagent__in=user_agents).select_related('customer', 'policy', 'assigned_subagent')
-
+        return Inquiry.objects.all().select_related('customer', 'policy', 'assigned_subagent')
     def get_serializer_class(self):
         if self.request.method in ['PUT', 'PATCH']:
             return InquiryUpdateSerializer
@@ -37,17 +40,40 @@ class AgentInquiryDetailView(generics.RetrieveUpdateAPIView):
         context['request'] = self.request
         return context
 
-    # Add error handling for debugging
+    # Fixed error handling
     def retrieve(self, request, *args, **kwargs):
         try:
             return super().retrieve(request, *args, **kwargs)
-        except Exception as e:
-            print(f"Error in AgentInquiryDetailView: {e}")  # Debug log
+        except Http404:
+            print(f"Inquiry {kwargs.get('pk')} not accessible to user {request.user}")
             return Response(
-                {"error": f"Failed to retrieve inquiry: {str(e)}"}, 
+                {"error": "Inquiry not found or you don't have permission to access it"}, 
+                status=status.HTTP_404_NOT_FOUND
+            )
+        except Exception as e:
+            print(f"Unexpected error in AgentInquiryDetailView: {str(e)}")
+            import traceback
+            traceback.print_exc()
+            return Response(
+                {"error": "An unexpected error occurred"}, 
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
 
+
+    def update(self, request, *args, **kwargs):
+        try:
+            return super().update(request, *args, **kwargs)
+        except Inquiry.DoesNotExist:
+            return Response(
+                {"error": "Inquiry not found or you don't have permission to access it"}, 
+                status=status.HTTP_404_NOT_FOUND
+            )
+        except Exception as e:
+            print(f"Error updating inquiry: {str(e)}")
+            return Response(
+                {"error": "Failed to update inquiry"}, 
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
 
 class AgentAssignedInquiriesView(generics.ListAPIView):
     serializer_class = InquiryListSerializer

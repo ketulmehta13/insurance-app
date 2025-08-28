@@ -9,17 +9,23 @@ from django.db.models import Count
 from client.models import FamilyHead, FamilyMember, Firm
 from policy.models import Policy
 from agent.models import SubAgent
+from .models import Document
 
 class DashboardStatsView(APIView):
-    """
-    Provides all the necessary statistics and data for the main dashboard.
-    """
+    
     def get(self, request, *args, **kwargs):
         # --- Data for Stats Cards ---
         total_family_heads = FamilyHead.objects.count()
         total_family_members = FamilyMember.objects.count()
         total_firms = Firm.objects.count()
         total_sub_agents = SubAgent.objects.count()
+        
+        total_documents_uploaded = Document.objects.count()
+        
+         
+        document_counts_by_type = Document.objects.values('document_type').annotate(
+            count=Count('document_type')
+        )
 
         # --- Data for Charts ---
         # This is a simplified example. You could make these queries more complex.
@@ -49,7 +55,7 @@ class DashboardStatsView(APIView):
             'charts': {
                 'client_registration': {'total': 500, 'used': client_registrations_total},
                 'policy_entry': {'total': 1000, 'used': policy_entries_total},
-                'documents_upload': {'total': 2000, 'used': 1500}, # Example data
+                'documents_upload': {'total': 2000, 'used': total_documents_uploaded}, # Example data
             },
             'calendar_events': calendar_events,
         }

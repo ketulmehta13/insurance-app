@@ -280,8 +280,7 @@ const AgentAssignedInquiries = () => {
                         </th>
                       </tr>
                     </thead>
-                    // Replace the table body section with this corrected
-                    version:
+                    
                     <tbody className="bg-white dark:bg-slate-800 divide-y divide-slate-200 dark:divide-slate-700">
                       <AnimatePresence>
                         {inquiries.map((inq, index) => (
@@ -342,6 +341,7 @@ const AgentAssignedInquiries = () => {
                                   e.stopPropagation();
                                   navigate(`/agent/inquiries/${inq.id}`);
                                 }}
+                                
                                 className="p-2 text-indigo-600 hover:text-indigo-700 hover:bg-indigo-50 dark:hover:bg-indigo-900/20 rounded-lg transition-colors"
                                 title="View Inquiry"
                               >
