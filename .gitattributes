@@ -1,0 +1,254 @@
+# Insurance Management Application - Git Attributes Configuration
+# This file ensures consistent behavior across different operating systems and development environments
+
+# =============================================================================
+# Auto-detect text files and normalize line endings to LF in repository
+# =============================================================================
+* text=auto
+
+# =============================================================================
+# Source Code Files - Ensure proper language detection and line endings
+# =============================================================================
+
+# JavaScript files
+*.js text eol=lf linguist-language=JavaScript
+*.jsx text eol=lf linguist-language=JavaScript
+*.mjs text eol=lf linguist-language=JavaScript
+
+# TypeScript files  
+*.ts text eol=lf linguist-language=TypeScript
+*.tsx text eol=lf linguist-language=TypeScript
+
+# Python files
+*.py text eol=lf linguist-language=Python
+*.pyw text eol=lf linguist-language=Python
+*.pyx text eol=lf linguist-language=Python
+
+# CSS and styling files
+*.css text eol=lf linguist-language=CSS
+*.scss text eol=lf linguist-language=SCSS
+*.sass text eol=lf linguist-language=Sass
+*.less text eol=lf linguist-language=Less
+
+# HTML and template files
+*.html text eol=lf linguist-language=HTML
+*.htm text eol=lf linguist-language=HTML
+*.hbs text eol=lf
+*.handlebars text eol=lf
+
+# =============================================================================
+# Configuration and Data Files
+# =============================================================================
+
+# JSON files (exclude from language stats but maintain proper formatting)
+*.json text eol=lf linguist-vendored
+*.jsonc text eol=lf linguist-vendored
+package.json text eol=lf linguist-vendored
+package-lock.json text eol=lf linguist-vendored
+*.json5 text eol=lf linguist-vendored
+
+# YAML and configuration files
+*.yml text eol=lf
+*.yaml text eol=lf
+*.toml text eol=lf
+*.ini text eol=lf
+*.cfg text eol=lf
+*.conf text eol=lf
+
+# Environment files
+.env* text eol=lf
+*.env text eol=lf
+
+# Lock files (exclude from language stats)
+yarn.lock text eol=lf linguist-vendored
+pnpm-lock.yaml text eol=lf linguist-vendored
+poetry.lock text eol=lf linguist-vendored
+Pipfile.lock text eol=lf linguist-vendored
+requirements.txt text eol=lf linguist-vendored
+
+# =============================================================================
+# Documentation Files
+# =============================================================================
+
+# Markdown files (mark as documentation)
+*.md text eol=lf linguist-documentation
+*.markdown text eol=lf linguist-documentation
+*.mdown text eol=lf linguist-documentation
+*.mkd text eol=lf linguist-documentation
+*.mkdn text eol=lf linguist-documentation
+*.mdx text eol=lf linguist-documentation
+
+# Documentation directories
+docs/* linguist-documentation
+documentation/* linguist-documentation
+README* linguist-documentation
+CHANGELOG* linguist-documentation
+LICENSE* linguist-documentation
+CONTRIBUTING* linguist-documentation
+
+# =============================================================================
+# Build and Distribution Files (exclude from language stats)
+# =============================================================================
+
+# Node.js build outputs
+build/* linguist-vendored
+dist/* linguist-vendored
+out/* linguist-vendored
+.next/* linguist-vendored
+coverage/* linguist-vendored
+.nyc_output/* linguist-vendored
+
+# Python build outputs
+__pycache__/* linguist-vendored
+*.pyc linguist-vendored
+*.pyo linguist-vendored
+*.pyd linguist-vendored
+.Python linguist-vendored
+env/* linguist-vendored
+venv/* linguist-vendored
+.venv/* linguist-vendored
+pip-log.txt linguist-vendored
+pip-delete-this-directory.txt linguist-vendored
+
+# Dependency directories
+node_modules/* linguist-vendored
+jspm_packages/* linguist-vendored
+bower_components/* linguist-vendored
+vendor/* linguist-vendored
+
+# =============================================================================
+# Binary Files
+# =============================================================================
+
+# Images
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.svg text eol=lf
+*.webp binary
+*.bmp binary
+*.tiff binary
+*.tif binary
+
+# Fonts
+*.woff binary
+*.woff2 binary
+*.eot binary
+*.ttf binary
+*.otf binary
+
+# Archives
+*.zip binary
+*.tar binary
+*.gz binary
+*.bz2 binary
+*.7z binary
+*.rar binary
+
+# Documents
+*.pdf binary
+*.doc binary
+*.docx binary
+*.xls binary
+*.xlsx binary
+*.ppt binary
+*.pptx binary
+
+# Audio/Video
+*.mp3 binary
+*.mp4 binary
+*.avi binary
+*.mov binary
+*.wmv binary
+*.flv binary
+*.wav binary
+
+# =============================================================================
+# Specific Framework Files
+# =============================================================================
+
+# React/Next.js specific
+*.config.js text eol=lf linguist-vendored
+next.config.js text eol=lf linguist-vendored
+webpack.config.js text eol=lf linguist-vendored
+babel.config.js text eol=lf linguist-vendored
+jest.config.js text eol=lf linguist-vendored
+
+# Express/Node.js specific
+server.js text eol=lf linguist-language=JavaScript
+app.js text eol=lf linguist-language=JavaScript
+index.js text eol=lf linguist-language=JavaScript
+
+# Database files
+*.sql text eol=lf
+*.sqlite binary
+*.db binary
+
+# =============================================================================
+# Git and Version Control
+# =============================================================================
+
+# Git files
+.gitignore text eol=lf
+.gitattributes text eol=lf
+.gitmodules text eol=lf
+
+# Editor and IDE files
+.vscode/* linguist-vendored
+.idea/* linguist-vendored
+*.swp binary
+*.swo binary
+*~ binary
+
+# =============================================================================
+# Platform Specific Files
+# =============================================================================
+
+# Windows specific files (force CRLF for Windows batch files)
+*.bat text eol=crlf
+*.cmd text eol=crlf
+*.ps1 text eol=crlf
+
+# Shell scripts (force LF)
+*.sh text eol=lf
+*.bash text eol=lf
+*.zsh text eol=lf
+*.fish text eol=lf
+
+# =============================================================================
+# Custom Insurance App Specific Rules
+# =============================================================================
+
+# Insurance calculation scripts
+scripts/*.py text eol=lf linguist-language=Python
+calculations/*.py text eol=lf linguist-language=Python
+
+# Policy templates and forms
+templates/* text eol=lf
+forms/* text eol=lf
+
+# Test files
+*.test.js text eol=lf linguist-language=JavaScript
+*.test.ts text eol=lf linguist-language=TypeScript
+*.spec.js text eol=lf linguist-language=JavaScript
+*.spec.ts text eol=lf linguist-language=TypeScript
+test/* linguist-vendored
+tests/* linguist-vendored
+__tests__/* linguist-vendored
+
+# Log files
+*.log text eol=lf linguist-vendored
+logs/* linguist-vendored
+
+# Temporary files
+*.tmp binary
+*.temp binary
+tmp/* linguist-vendored
+temp/* linguist-vendored
+
+# Cache directories
+.cache/* linguist-vendored
+cache/* linguist-vendored
+.parcel-cache/* linguist-vendored
